@@ -1,0 +1,33 @@
+CREATE OR REPLACE TRIGGER trigger_name 
+AFTER INSERT OR UPDATE OR DELETE on lib_table 
+FOR EACH ROW 
+
+BEGIN 
+   IF INSERTING THEN 
+     INSERT INTO library_audit values(SYSDATE , :NEW.book_name , NULL , :NEW.status , 'INSERTED') ;
+   ELSIF UPDATING THEN 
+     INSERT INTO library_audit values(SYSDATE , :OLD.book_name , :OLD.status , :NEW.status , 'UPDATED') ;
+   ELSE
+     INSERT INTO library_audit values(SYSDATE , :OLD.book_name , :OLD.status , NULL  , 'DELETED') ;
+   END IF ;
+END ;
+/
+     
+
+
+
+CREATE OR REPLACE TRIGGER trigger_name 
+AFTER INSERT OR UPDATE OR DELETE on lib_table 
+FOR EACH ROW 
+
+BEGIN
+  IF INSERTING THEN 
+    INSERT into library_audit values(SYSDATE , :NEW.book_name , NULL , :NEW.status , 'INSERTED') ; 
+  ELSIF UPDATING THEN 
+    INSERT into library_audit values(SYSDATE , :OLD.book_name , :OLD.status , :NEW.status , 'UPDATED') ;
+  ELSE
+    INSERT into library_audit values(SYSDATE , :OLD.book_name , :OLD.status , NULL , 'DELETED') ;
+ 
+  END IF ;
+END ;
+/

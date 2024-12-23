@@ -1,0 +1,311 @@
+
+
+
+
+1.
+
+select m.title , b.domestic_sales , b.international_sales from Movies m inner join BoxOffice b on m.id = b.id ;
+
++------+--------+----------------+---------------------+
+| id   | rating | domestic_sales | international_sales |
++------+--------+----------------+---------------------+
+|    5 |    8.2 |           3000 |                5550 |
+|   14 |    7.4 |           2684 |                4750 |
+|    8 |    8.0 |           2064 |                4172 |
+|   12 |    6.4 |           1914 |                3684 |
+|    3 |    7.9 |           2458 |                2391 |
+|    6 |    8.0 |           2614 |                3700 |
+|    9 |    8.5 |           2238 |                2975 |
++------+--------+----------------+---------------------+
+7 rows in set (0.00 sec)
+
+
+2.
+
+select m.title ,  b.domestic_sales , b.international_sales from Movies m inner join BoxOffice b on m.id = b.id where ( b.international_sales > b.domestic_sales) ;
++--------------------+----------------+---------------------+
+| title              | domestic_sales | international_sales |
++--------------------+----------------+---------------------+
+| Finding Nemo       |           3000 |                5550 |
+| The Incredibles    |           2614 |                3700 |
+| Ratatouille        |           2064 |                4172 |
+| Wall E             |           2238 |                2975 |
+| Cars 2             |           1914 |                3684 |
+| MOnster University |           2684 |                4750 |
++--------------------+----------------+---------------------+
+
+3.
+
+select m.title ,  b.rating  from Movies m left join BoxOffice b on m.id = b.id order by b.rating  desc;
++--------------------+--------+
+| title              | rating |
++--------------------+--------+
+| Wall E             |    8.5 |
+| Finding Nemo       |    8.2 |
+| The Incredibles    |    8.0 |
+| Ratatouille        |    8.0 |
+| Toy Story 3        |    7.9 |
+| MOnster University |    7.4 |
+| Cars 2             |    6.4 |
+| Toy Story          |   NULL |
+| Bugs Life          |   NULL |
+| MOnsters           |   NULL |
+| Cars               |   NULL |
+| Up                 |   NULL |
+| Toy Story 3        |   NULL |
+| Brave              |   NULL |
++--------------------+--------+
+14 rows in set (0.00 sec)
+
+
+
+
+mysql> select * from customer ;
++-------------+----------------+------------+-------+-------------+
+| customer_id | cust_name      | city       | grade | salesman_id |
++-------------+----------------+------------+-------+-------------+
+|        3001 | Brad Guzan     | London     |   100 |        5005 |
+|        3002 | Nick Rimando   | New York   |   100 |        5001 |
+|        3003 | Jozy Altidore  | Moscow     |   200 |        5007 |
+|        3004 | Fabian Johnson | Paris      |   300 |        5006 |
+|        3005 | Graham Zusi    | California |   200 |        5002 |
+|        3007 | Brad Davis     | New York   |   200 |        5001 |
+|        3008 | Julian Green   | London     |   300 |        5002 |
+|        3009 | Geoff Cameron  | Berlin     |   100 |        5003 |
++-------------+----------------+------------+-------+-------------+
+8 rows in set (0.00 sec)
+ 
+ 
+ 
+mysql> select * from salesman ;
++-------------+-------------+----------+------------+
+| salesman_id | name        | city     | commission |
++-------------+-------------+----------+------------+
+|        5001 | James Hooq  | New York |       0.15 |
+|        5002 | Niall Knite | Paris    |       0.13 |
+|        5003 | Lauon Hen   | San Jose |       0.12 |
+|        5005 | Pit Alex    | London   |       0.11 |
+|        5006 | Mc Lyon     | Paris    |       0.14 |
+|        5007 | Paul Adam   | Rome     |       0.13 |
++-------------+-------------+----------+------------+
+6 rows in set (0.00 sec)
+
+
+select * from orders ;
++--------+-----------+------------+-------------+-------------+
+| ord_no | purch_amt | ord_date   | customer_id | salesman_id |
++--------+-----------+------------+-------------+-------------+
+|  70001 |    150.50 | 2012-10-05 |        3005 |        5002 |
+|  70002 |     65.26 | 2012-10-05 |        3002 |        5001 |
+|  70003 |    110.00 | 2012-10-10 |        3009 |        5003 |
+|  70004 |    948.00 | 2012-09-10 |        3005 |        5002 |
+|  70005 |   1983.43 | 2012-08-17 |        3004 |        5006 |
+|  70007 |   5760.00 | 2012-09-27 |        3002 |        5001 |
+|  70008 |   2400.00 | 2012-11-10 |        3007 |        5001 |
+|  70009 |    270.65 | 2012-09-10 |        3001 |        5005 |
+|  70010 |   2480.40 | 2012-06-17 |        3009 |        5003 |
+|  70011 |    250.45 | 2012-08-17 |        3008 |        5002 |
+|  70013 |     75.29 | 2012-04-25 |        3003 |        5007 |
++--------+-----------+------------+-------------+-------------+
+11 rows in set (0.00 sec)
+
+
+
+4.
+
+SELECT 
+    s.name AS Salesman, 
+    c.cust_name AS Customer, 
+    s.city 
+FROM 
+    salesman s
+JOIN 
+    customer c ON s.city = c.city;
+    
+    +-------------+----------------+----------+
+| Salesman    | Customer       | city     |
++-------------+----------------+----------+
+| Pit Alex    | Brad Guzan     | London   |
+| James Hooq  | Nick Rimando   | New York |
+| Mc Lyon     | Fabian Johnson | Paris    |
+| Niall Knite | Fabian Johnson | Paris    |
+| James Hooq  | Brad Davis     | New York |
+| Pit Alex    | Julian Green   | London   |
++-------------+----------------+----------+
+6 rows in set (0.00 sec)
+
+
+
+5.
+
+SELECT 
+    o.ord_no, 
+    o.purch_amt, 
+    c.cust_name, 
+    c.city 
+FROM 
+    orders o
+INNER JOIN 
+    customer c ON o.customer_id = c.customer_id
+WHERE 
+    o.purch_amt BETWEEN 500 AND 2000;
+    
++--------+-----------+----------------+------------+
+| ord_no | purch_amt | cust_name      | city       |
++--------+-----------+----------------+------------+
+|  70004 |    948.00 | Graham Zusi    | California |
+|  70005 |   1983.43 | Fabian Johnson | Paris      |
++--------+-----------+----------------+------------+
+2 rows in set (0.00 sec)
+
+    
+    
+
+
+6.
+
+select c.cust_name as Customer, c.city, 
+    s.name as Salesman, 
+    s.commission FROM 
+    salesman s
+RIGHT JOIN 
+    customer c ON s.salesman_id = c.salesman_id;
+
++----------------+------------+-------------+------------+
+| Customer       | city       | Salesman    | commission |
++----------------+------------+-------------+------------+
+| Brad Guzan     | London     | Pit Alex    |       0.11 |
+| Nick Rimando   | New York   | James Hooq  |       0.15 |
+| Jozy Altidore  | Moscow     | Paul Adam   |       0.13 |
+| Fabian Johnson | Paris      | Mc Lyon     |       0.14 |
+| Graham Zusi    | California | Niall Knite |       0.13 |
+| Brad Davis     | New York   | James Hooq  |       0.15 |
+| Julian Green   | London     | Niall Knite |       0.13 |
+| Geoff Cameron  | Berlin     | Lauon Hen   |       0.12 |
++----------------+------------+-------------+------------+
+8 rows in set (0.00 sec)
+
+
+7.
+
+
+SELECT 
+    c.cust_name AS Customer, 
+    c.city AS Customer_City, 
+    s.name AS Salesman, 
+    s.commission 
+FROM 
+    salesman s
+LEFT JOIN 
+    customer c ON s.salesman_id = c.salesman_id
+WHERE 
+    s.commission > 0.12;
+    
+    
+    
+    +----------------+---------------+-------------+------------+
+| Customer       | Customer_City | Salesman    | commission |
++----------------+---------------+-------------+------------+
+| Brad Davis     | New York      | James Hooq  |       0.15 |
+| Nick Rimando   | New York      | James Hooq  |       0.15 |
+| Julian Green   | London        | Niall Knite |       0.13 |
+| Graham Zusi    | California    | Niall Knite |       0.13 |
+| Fabian Johnson | Paris         | Mc Lyon     |       0.14 |
+| Jozy Altidore  | Moscow        | Paul Adam   |       0.13 |
++----------------+---------------+-------------+------------+
+6 rows in set (0.00 sec)
+
+
+
+
+
+
+
+8 . 
+SELECT 
+    s.name AS Salesman, 
+    c.cust_name AS Customer, 
+    o.ord_no, 
+    o.purch_amt 
+FROM 
+    salesman s
+INNER JOIN 
+    customer c ON s.salesman_id = c.salesman_id
+INNER JOIN 
+    orders o ON c.customer_id = o.customer_id;
+
+
++-------------+----------------+--------+-----------+
+| Salesman    | Customer       | ord_no | purch_amt |
++-------------+----------------+--------+-----------+
+| Niall Knite | Graham Zusi    |  70001 |    150.50 |
+| James Hooq  | Nick Rimando   |  70002 |     65.26 |
+| Lauon Hen   | Geoff Cameron  |  70003 |    110.00 |
+| Niall Knite | Graham Zusi    |  70004 |    948.00 |
+| Mc Lyon     | Fabian Johnson |  70005 |   1983.43 |
+| James Hooq  | Nick Rimando   |  70007 |   5760.00 |
+| James Hooq  | Brad Davis     |  70008 |   2400.00 |
+| Pit Alex    | Brad Guzan     |  70009 |    270.65 |
+| Lauon Hen   | Geoff Cameron  |  70010 |   2480.40 |
+| Niall Knite | Julian Green   |  70011 |    250.45 |
+| Paul Adam   | Jozy Altidore  |  70013 |     75.29 |
++-------------+----------------+--------+-----------+
+11 rows in set (0.00 sec)
+
+
+
+
+9.
+SELECT 
+    c.cust_name, c.customer_id, c.grade, s.name as Salesman, s.city as Salesman_City from  
+    customer c
+left join
+    salesman s on c.salesman_id = s.salesman_id
+order by 
+    c.customer_id asc;
+
+
++----------------+-------------+-------+-------------+---------------+
+| cust_name      | customer_id | grade | Salesman    | Salesman_City |
++----------------+-------------+-------+-------------+---------------+
+| Brad Guzan     |        3001 |   100 | Pit Alex    | London        |
+| Nick Rimando   |        3002 |   100 | James Hooq  | New York      |
+| Jozy Altidore  |        3003 |   200 | Paul Adam   | Rome          |
+| Fabian Johnson |        3004 |   300 | Mc Lyon     | Paris         |
+| Graham Zusi    |        3005 |   200 | Niall Knite | Paris         |
+| Brad Davis     |        3007 |   200 | James Hooq  | New York      |
+| Julian Green   |        3008 |   300 | Niall Knite | Paris         |
+| Geoff Cameron  |        3009 |   100 | Lauon Hen   | San Jose      |
++----------------+-------------+-------+-------------+---------------+
+8 rows in set (0.00 sec)
+
+
+
+
+10. select s.name AS Salesman from salesman s
+   left join nsert into Movies (id,title,director,year,length) values(1,'Toy Story' , 'John Lasseter' , 1995 , 81);
+
+    customer c on s.salesman_id = c.salesman_id
+   where 
+    c.salesman_id IS NULL;
+
+
+Empty set (0.00 sec)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

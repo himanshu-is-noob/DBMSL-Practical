@@ -1,0 +1,58 @@
+-- Procedure to insert grade based on total marks
+CREATE OR REPLACE PROCEDURE proc_Grade(
+    p_rno        IN NUMBER,
+    p_name       IN VARCHAR2,
+    p_total_marks IN NUMBER  
+) IS
+    v_class VARCHAR2(50);
+BEGIN
+    IF p_total_marks <= 1500 AND p_total_marks >= 990 THEN
+        v_class := 'DISTINCTION';
+        INSERT INTO result (rno, name, class) VALUES (p_rno, p_name, v_class);
+
+    ELSIF p_total_marks <= 989 AND p_total_marks >= 900 THEN
+        v_class := 'FIRST CLASS';
+        INSERT INTO result (rno, name, class) VALUES (p_rno, p_name, v_class);
+
+    ELSIF p_total_marks <= 899 AND p_total_marks >= 825 THEN
+        v_class := 'HIGHER SECOND CLASS';
+        INSERT INTO result(rno, name, class) VALUES (p_rno, p_name, v_class);
+
+    ELSE
+        v_class := 'Fail';
+        INSERT INTO result(rno, name, class) VALUES (p_rno, p_name, v_class);
+        DBMS_OUTPUT.PUT_LINE('Out of Range');
+    END IF;
+
+    INSERT INTO Student_Marks (rno, name, total_marks) VALUES (p_rno, p_name, p_total_marks);
+
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
+        RETURN;
+END proc_Grade;
+/
+
+-- Function to call the procedure and return a confirmation message
+CREATE OR REPLACE FUNCTION func_call(rno IN NUMBER, name IN VARCHAR2, marks IN NUMBER) 
+RETURN VARCHAR2 AS
+BEGIN 
+   proc_Grade(rno, name, marks);
+   RETURN 'Successfully';
+END func_call;
+/
+
+-- Anonymous Block to test the procedure and function
+DECLARE 
+   name VARCHAR2(50);
+   rno NUMBER;
+   marks NUMBER;
+   class VARCHAR2(50);
+BEGIN 
+   name := '&name';
+   rno := &rno;
+   marks := &marks;
+   class := func_call(rno, name, marks);
+   DBMS_OUTPUT.PUT_LINE(class);
+END;
+/

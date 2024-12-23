@@ -1,0 +1,61 @@
+ use TECO2425A006 ;
+
+                 INSERT
+
+db.Student.insertOne({id:101 , name:'Himanshu' , age : 22 , dept : 'computer'}) ;
+
+
+db.Student.insertMany([{id:102 , name:'Harshal' , age : 21 , dept : 'computer'} , {id:103 , name: 'Krishna' , age : 25 , dept : 'mechanical'} , {id:104 , name:'John' , age : 20 , dept : 'electron'}]) ;
+
+ db.Student.find().pretty() ;
+
+ db.Student.insertMany([{id : 105 , name : 'Rohit' , age:25 , dept:'civil'},{id:106 , name: 'Rudra' , age:30 , dept:'IT'},{id:107 ,name: 'Guru' , age : 26 , dept : 'IT; }]) ;
+
+
+
+               UPDATE
+
+ db.Student.updateOne({name:'Rudra'} , {$set:{age: 27}});
+
+ db.Student.updateMany({dept : 'comp'} , {$set:{dept:'computer'}}) ;
+
+
+                SORT ascending and descending 
+
+
+ db.Student.find().sort({age : 1}).pretty();
+
+ db.Student.find().sort({age : -1}).pretty();
+
+
+                Greater than Lesser than 
+
+
+db.Student.find({age:{$lt:25}}) ;
+
+db.Student.find({age:{$gt:25}}) ;
+
+               
+               Name starting with H
+
+
+ db.Student.find({name : {$regex : /^H/}}).pretty() ;
+
+
+              Name ending with U
+
+db.Student.find({name : {$regex : /u$/}}).pretty() ;
+             
+
+             Name that Contains 'H' and 'U'
+
+ db.Student.find({name : {$regex : /.*h.*u/}}).pretty() ;
+
+            Increment and Decrement 
+
+db.emp.updateOne({emp_id : 4} , {$inc : {sal : 1000}}) ;
+
+ db.emp.updateOne({emp_id : 4} , {$inc : {sal : -1000}}) ;
+            Eq 
+
+db.emp.find({sal: {$eq : 50000}}).pretty() ;

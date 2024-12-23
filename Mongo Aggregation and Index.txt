@@ -1,0 +1,107 @@
+use TECO2425A006 ;
+
+ db.createCollection('stu') ;
+
+ db.stu.insertOne({username : 'Himanshu' , user_id : 101 , age : 20 , state : 'Maharashtra' }) ;
+
+ db.stu.insertMany([{username : 'Harshal' , user_id : 102 , age : 21 , state : 'Goa' },{username : 'Kushagra' , user_id : 103 , age : 24 , state : 'MP'} , {username : 'Ritesh' , user_id : 105 , age : 22 , state : 'Maharashtra'} , {username : 'Rohan' , user_id : 106 , age : 28 , state : 'Haryana'}]) ;
+
+
+
+ //before indexing 
+
+db.stu.find().pretty() ;
+
+ db.stu.find({state : 'Maharashtra'}).explain('executionStats') ;
+
+
+db.stu.ensureIndex({"state" : 1 }) ;
+
+
+//After Indexing 
+
+ db.stu.find({state : 'Maharashtra'}).explain("executionStats") ;
+
+ db.stu.find({state : 'Maharashtra'}).explain() ;
+
+
+
+ db.stu.find({state : 'Goa'}).explain() ;
+
+db.stu.find({state : 'Goa'}).explain("executionStats") ;
+
+
+//Compound Index
+
+db.stu.find({username : 'Himanshu' , state : 'Maharashtra'}).explain() ;
+
+ db.stu.ensureIndex({state : 1 , username : 1}) ;
+
+
+
+
+
+ // HInt function 
+
+ db.stu.find({state : 'Goa'}).hint({state : 1 }) ;
+ db.stu.find({state : 'Goa'}).hint({state : 1 }).explain() ;
+
+
+
+ db.stu.update({'user_id':101},{$set:{'salary': 15000}}) ;
+db.stu.update({'user_id':102},{$set:{'salary': 20000}}) ;
+db.stu.update({'user_id':103},{$set:{'salary': 23000}}) ;
+db.stu.update({'user_id':105},{$set:{'salary': 17000}}) ;
+ db.stu.update({'user_id':106},{$set:{'salary': 10000}}) ;
+
+
+ db.stu.find().pretty() ;
+
+
+//Aggregation  Sum 
+
+
+ db.stu.aggregate([{$group : {_id:"$state", total_sal : {$sum : "$salary"}}}])
+
+   // Max Sal 
+
+db.stu.aggregate([{$group : {_id:"$state", total_sal : {$max : "$salary"}}}])
+
+// Max and MIn
+
+ db.stu.aggregate([{$group : {_id:"$state", total_sal : {$max : "$salary"}}}]);
+ db.stu.aggregate([{$group : {_id:"$state",min_sal: {$min : "$salary"}}}])
+
+// Average 
+
+ db.stu.aggregate([{$group : {_id:"$state",avg_salary: {$avg : "$salary"}}}])
+
+
+// Sorting (Ascending)
+
+db.stu.aggregate([{$group : {_id:"$state", total_sum : {$sum : "$salary"}}},{$sort:{total_sum:1}}]) 
+
+
+//Sorting Descending 
+db.stu.aggregate([{$group : {_id:"$state", total_sum : {$sum : "$salary"}}},{$sort:{total_sum:-1}}]) ;
+
+
+// Sorting based on Avg salary 
+
+db.stu.aggregate([{$group : {_id:"$state", avg_sal : {$avg : "$salary"}}},{$sort:{avg_sal:1}}]) ;
+
+//Sorting based on minimum Salary 
+
+db.stu.aggregate([{$group : {_id:"$state", min_sal : {$min : "$salary"}}},{$sort:{min_sal:1}}]) ;
+
+//Sorting based on Maximum Salary 
+
+ db.stu.aggregate([{$group : {_id:"$state", max_sal : {$max : "$salary"}}},{$sort:{max_sal:1}}]) ;
+
+//first and last 
+
+db.stu.aggregate([{$group : {_id:"$state", total_sal : {$first : "$salary"}}}]) ;
+db.stu.aggregate([{$group : {_id:"$state", total_sal : {$last : "$salary"}}}]) ;
+
+
+db.stu.aggregate([{$group : {_id:"$state", total_sal : {$last : "$salary"}}},{$sort : {total_sal: 1 }}]) ;

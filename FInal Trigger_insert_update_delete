@@ -1,0 +1,263 @@
+ CREATE TABLE lib_table (
+       book_name VARCHAR2(50),
+       status VARCHAR2(20)
+    );
+
+ CREATE TABLE library_audit (
+       date_modified DATE,
+       book_name VARCHAR2(50),
+       old_status VARCHAR2(50),
+       new_status VARCHAR2(50),
+       action VARCHAR2(50)
+    );
+
+insert into lib_table values('Harry Potter' , ' UNAVAILABLE') ;
+insert into lib_table values('Rich Dad Poor Dad' , ' AVAILABLE') ;
+insert into lib_table values('Atomic Habits' , ' AVAILABLE') ;
+insert into lib_table values('Psychology of Money' , ' UNAVAILABLE') ;
+insert into lib_table values('48 Laws of Power' , ' AVAILABLE') ;
+
+
+select * from lib_table ;
+
+
+BOOK_NAME					   STATUS
+-------------------------------------------------- --------------------
+Harry Potter					   AVAILABLE
+Rich Dad Poor Dad				    AVAILABLE
+Atomic Habits					    AVAILABLE
+Psychology of Money				    UNAVAILABLE
+48 Laws of Power				    AVAILABLE
+Robinson Crusoe 				   AVAILABLE
+
+
+CREATE OR REPLACE TRIGGER trigger_name
+       AFTER INSERT OR UPDATE OR DELETE ON lib_table
+       FOR EACH ROW
+       BEGIN
+          IF UPDATING THEN
+             INSERT INTO library_audit (date_modified, book_name, old_status, new_status, action)
+             VALUES (SYSDATE, :OLD.book_name, :OLD.status, :NEW.status, 'UPDATED');
+          
+          ELSIF INSERTING THEN
+             INSERT INTO library_audit (date_modified, book_name, old_status, new_status, action)
+             VALUES (SYSDATE, :NEW.book_name, NULL, :NEW.status, 'INSERTED');
+          
+          ELSIF DELETING THEN
+             INSERT INTO library_audit (date_modified, book_name, old_status, new_status, action)
+             VALUES (SYSDATE, :OLD.book_name, :OLD.status, NULL, 'DELETED');
+          END IF;
+       END;
+    /
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+begin 
+   if UPDATING then
+	dbms_output.put_line(:OLD.status) ;
+	INSERT into library_audit values(SYSDATE , :OLD.book_name , :OLD.status , :NEW.status , 'UPDATED') ;   
+   elsif INSERTING then
+        dbms_output.put_line(:NEW.book_name || 'INSERTING') ;
+        INSERT into library_audit values(SYSDATE , :OLD.book_name , NULL , :NEW.status , 'INSERTED') ;  
+   elsif DELETING then
+        dbms_output.put_line(:OLD.book_name || 'DELETED') ;
+        INSERT into library_audit values(SYSDATE , :OLD.book_name , :OLD.status ,NULL, 'DELETED') ;  
+      
+      
+   end if ;
+ end ;
+/
+
+
+
+update lib_table set status='AVAILABLE' where book_name = 'Harry Potter';
+INSERT into lib_table values('Robinson Crusoe' , 'AVAILABLE');
+delete from lib_table where book_name = 'Robinson Crusoe' ;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                             FINAL
+                                             
+-------------------------------XX-----------------------------------------------------XX----------------------------------------
+
+
+                          
+
+
+create table library_audit(date_modified date , book_name varchar2(50) ,old_status varchar2(50) , new_status varchar2(50) , action varchar2(50)) ; 
+create table lib_table(book_name varchar2(50) , status varchar2(20)) ;
+
+insert into lib_table values('Harry Potter' , ' UNAVAILABLE') ;
+insert into lib_table values('Rich Dad Poor Dad' , ' AVAILABLE') ;
+insert into lib_table values('Atomic Habits' , ' AVAILABLE') ;
+insert into lib_table values('Psychology of Money' , ' UNAVAILABLE') ;
+insert into lib_table values('48 Laws of Power' , ' AVAILABLE') ;
+
+
+select * from lib_table ;
+
+
+BOOK_NAME					   STATUS
+-------------------------------------------------- --------------------
+Harry Potter					   AVAILABLE
+Rich Dad Poor Dad				    AVAILABLE
+Atomic Habits					    AVAILABLE
+Psychology of Money				    UNAVAILABLE
+48 Laws of Power				    AVAILABLE
+Robinson Crusoe 				   AVAILABLE	
+
+
+
+
+
+CREATE OR REPLACE TRIGGER trigger_name
+AFTER INSERT OR UPDATE OR DELETE ON lib_table
+FOR EACH ROW
+BEGIN
+   IF UPDATING THEN
+      dbms_output.put_line(:OLD.status || ' UPDATED');
+      INSERT INTO library_audit VALUES(SYSDATE, :OLD.book_name, :OLD.status, :NEW.status, 'UPDATED');
+   
+   ELSIF INSERTING THEN
+      dbms_output.put_line(:NEW.book_name || ' INSERTING');
+      INSERT INTO library_audit VALUES(SYSDATE, :NEW.book_name, NULL, :NEW.status, 'INSERTED');
+   
+   ELSIF DELETING THEN
+      dbms_output.put_line(:OLD.book_name || ' DELETED');
+      INSERT INTO library_audit VALUES(SYSDATE, :OLD.book_name, :OLD.status, NULL, 'DELETED');
+   END IF;
+END;
+/
+
+
+
+
+update lib_table set status='AVAILABLE' where book_name = 'Harry Potter';
+INSERT into lib_table values('Robinson Crusoe' , 'AVAILABLE');
+delete from lib_table where book_name = 'Robinson Crusoe' ;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+begin 
+   if UPDATING then
+	dbms_output.put_line(:OLD.status) ;
+	INSERT into library_audit values(SYSDATE , :OLD.book_name , :OLD.status , :NEW.status , 'UPDATED') ;   
+   elsif INSERTING then
+        dbms_output.put_line(:NEW.book_name || 'INSERTING') ;
+        INSERT into library_audit values(SYSDATE , :OLD.book_name , NULL , :NEW.status , 'INSERTED') ;  
+   elsif DELETING then
+        dbms_output.put_line(:OLD.book_name || 'DELETED') ;
+        INSERT into library_audit values(SYSDATE , :OLD.book_name , :OLD.status ,NULL, 'DELETED') ;  
+      
+      
+   end if ;
+ end ;
+/
+
+
+
+
+
+
+

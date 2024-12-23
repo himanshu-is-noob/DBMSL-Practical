@@ -1,0 +1,89 @@
+DECLARE
+    doi DATE;
+    amt NUMBER := 0;  -- Initialize amt to avoid NULL issues
+    no_of_days NUMBER;
+    input_rno NUMBER;  -- Variable for the roll number input
+    sys_date DATE;
+    name_of_book VARCHAR2(50);
+BEGIN
+    input_rno := &input_rno;
+    name_of_book := '&name_of_book';
+
+    -- Get the system date
+    SELECT SYSDATE INTO sys_date FROM dual;
+
+    -- Fetch the Date of Issue (DOI) for the given roll number
+    BEGIN
+        SELECT doi INTO doi FROM Borrower100 WHERE rno = input_rno;
+    EXCEPTION
+        WHEN no_data_found THEN
+            dbms_output.put_line('No Roll No available');
+            RETURN;  -- Exit if no data is found for the given roll number
+    END;
+
+    -- Calculate the number of days since the book was borrowed
+    no_of_days := sys_date - doi;
+
+    -- Calculate the fine based on the number of days overdue
+    IF no_of_days > 30 THEN
+        amt := amt + 50;
+        dbms_output.put_line('Days Overdue: ' || no_of_days);
+        dbms_output.put_line('Amount: ' || amt);
+    ELSIF no_of_days > 15 THEN
+        amt := amt + 5;
+        dbms_output.put_line('Days Overdue: ' || no_of_days);
+        dbms_output.put_line('Amount: ' || amt);
+    ELSE
+        dbms_output.put_line('Days Overdue: ' || no_of_days);
+        dbms_output.put_line('NO FINE');
+    END IF;
+
+    -- Insert fine record if applicable and update Borrower status
+    IF amt > 0 THEN
+        INSERT INTO Fine100(rno, date_fined, amount) VALUES (input_rno, doi, amt);
+        dbms_output.put_line('Data INSERTED Successfully!');
+        UPDATE Borrower100 SET status = 'R' WHERE rno = input_rno;
+    END IF;
+
+EXCEPTION
+    WHEN others THEN
+        dbms_output.put_line('Error Occurred: ' || SQLERRM);
+END;
+/
+
+
+
+
+
+-- Creating the Borrower table
+CREATE TABLE Borrower100 (
+    rno NUMBER PRIMARY KEY,
+    name VARCHAR2(50),
+    doi DATE, 
+    name_of_book VARCHAR2(50),
+    status CHAR(1)  );
+
+-- Creating the Fine table
+
+CREATE TABLE Fine100 (
+    rno NUMBER,
+    date_fined DATE,
+    amount NUMBER,
+ );
+
+-- Inserting sample data into Borrower table
+INSERT INTO Borrower100 (rno, name, doi, name_of_book, status) 
+VALUES (1, 'Alice', DATE '2024-10-01', 'Data Science Basics', 'B');
+
+INSERT INTO Borrower100 (rno, name, doi, name_of_book, status) 
+VALUES (2, 'Bob', DATE '2024-09-20', 'Computer Networks', 'B');
+
+INSERT INTO Borrower100 (rno, name, doi, name_of_book, status) 
+VALUES (3, 'Charlie', DATE '2024-10-10', 'Operating Systems', 'B');
+
+-- Sample data to test the fine calculation and insertion into Fine table
+INSERT INTO Borrower100 (rno, name, doi, name_of_book, status) 
+VALUES (4, 'Daisy', DATE '2024-09-15', 'Machine Learning', 'B');
+
+-- Commit changes to save the data
+COMMIT;
